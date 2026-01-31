@@ -9,14 +9,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,13 +21,15 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.examples.localweatherapp.presentation.WeatherUiState
 import com.examples.localweatherapp.presentation.WeatherViewModel
+import com.examples.localweatherapp.ui.ForecastItem
+import com.examples.localweatherapp.ui.SearchBar
+import com.examples.localweatherapp.ui.getWeatherImageUrl
 import com.examples.localweatherapp.ui.theme.*
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -118,32 +116,6 @@ fun WeatherScreen(
             }
         }
     }
-}
-
-@Composable
-fun SearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit
-) {
-    OutlinedTextField(
-        value = query,
-        onValueChange = onQueryChange,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        placeholder = { Text("Search City or ZIP Code", color = TextSecondary) },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = TextSecondary) },
-        shape = RoundedCornerShape(24.dp),
-        singleLine = true,
-        textStyle = MaterialTheme.typography.bodyLarge.copy(color = TextPrimary),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = BlueSecondary,
-            unfocusedBorderColor = CardBackground,
-            focusedContainerColor = CardBackground,
-            unfocusedContainerColor = CardBackground,
-            cursorColor = BlueSecondary
-        )
-    )
 }
 
 @Composable
@@ -261,54 +233,5 @@ fun WeatherContent(state: WeatherUiState.Success, viewModel: WeatherViewModel) {
         }
         
         Spacer(modifier = Modifier.height(32.dp))
-    }
-}
-
-@Composable
-fun ForecastItem(
-    label: String,
-    value: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        modifier = Modifier
-            .width(85.dp)
-            .clickable { onClick() },
-        colors = CardDefaults.cardColors(
-            containerColor = if (isSelected) BlueSecondary.copy(alpha = 0.8f) else CardBackground
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelSmall,
-                color = if (isSelected) Color.Black else TextSecondary
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = value,
-                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                color = if (isSelected) Color.Black else TextPrimary
-            )
-        }
-    }
-}
-
-fun getWeatherImageUrl(code: Int): String {
-    return when (code) {
-        0 -> "https://openweathermap.org/img/wn/01d@4x.png"
-        1, 2, 3 -> "https://openweathermap.org/img/wn/02d@4x.png"
-        45, 48 -> "https://openweathermap.org/img/wn/50d@4x.png"
-        51, 53, 55 -> "https://openweathermap.org/img/wn/09d@4x.png"
-        61, 63, 65 -> "https://openweathermap.org/img/wn/10d@4x.png"
-        71, 73, 75 -> "https://openweathermap.org/img/wn/13d@4x.png"
-        95, 96, 99 -> "https://openweathermap.org/img/wn/11d@4x.png"
-        else -> "https://openweathermap.org/img/wn/01d@4x.png"
     }
 }
